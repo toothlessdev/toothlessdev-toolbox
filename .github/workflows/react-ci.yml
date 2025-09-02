@@ -1,0 +1,96 @@
+name: "Continuous Integration"
+
+on:
+    pull_request:
+        branches:
+            - develop
+
+jobs:
+    danger-js:
+        name: "Run DangerJS"
+        runs-on: ubuntu-latest
+        permissions:
+            issues: write
+            pull-requests: write
+            statuses: write
+            checks: write
+        steps:
+            - name: Setup Node.js Environment
+              uses: ./.github/actions/setup-node
+
+            - name: "Run DangerJS"
+              run: npx danger ci
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    storybook:
+        name: Build & Publish Storybook
+        needs: danger-js
+        runs-on: ubuntu-latest
+        outputs:
+            chromatic_url: ${{ steps.chromatic.outputs.url }}
+            chromatic_build_url: ${{ steps.chromatic.outputs.buildUrl }}
+        steps:
+            - name: Setup Node.js Environment
+              uses: ./.github/actions/setup-node
+
+            - name: Cache Storybook build
+              uses: actions/cache@v4
+              with:
+                  path: storybook-static
+                  key: ${{ runner.os }}-storybook-${{ github.sha }}
+                  restore-keys: ${{ runner.os }}-storybook-
+
+            - name: Build Storybook
+              run: yarn build-storybook
+
+            - name: Publish to Chromatic
+              id: chromatic
+              uses: chromaui/action@v1 # v1으로 버전 고정
+              with:
+                  projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+                  onlyChanged: true
+                  exitZeroOnChanges: true # UI 변경이 있어도 워크플로우를 통과시킴
+
+    storybook-comment:
+        name: Comment PR with Chromatic URL
+        needs: storybook
+        runs-on: ubuntu-latest
+        # if: github.event_name == 'pull_request'
+        permissions:
+            pull-requests: write
+        steps:
+            - name: Comment URLs on PR
+              uses: actions/github-script@v7
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const pr = context.payload.pull_request;
+                      const chromaticURL = '${{ needs.storybook.outputs.chromatic_build_url }}';
+
+                      let body = '## 📚 Storybook이 Chromatic에 배포되었습니다!\n';
+                      if (chromaticURL) body += `- 🚀 Chromatic Build: ${chromaticURL}\n`;
+
+                      const { data: comments } = await github.rest.issues.listComments({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: pr.number,
+                      });
+
+                      const existingComment = comments.find(comment => comment.user.login === 'github-actions[bot]' && comment.body.includes('Storybook'));
+
+                      if (existingComment) {
+                        await github.rest.issues.updateComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          comment_id: existingComment.id,
+                          body,
+                        });
+                      } else {
+                        await github.rest.issues.createComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          issue_number: pr.number,
+                          body,
+                        });
+                      }
