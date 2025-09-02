@@ -1,3 +1,11 @@
+# ✍️ VSCode Code Snippets
+
+## 적용방법
+
+1. `.vscode/*.code-snippets` 파일을 만들어요
+2. 아래에서 사용할 코드 스니펫을 붙여넣어요
+3. 협업할때는 `.gitignore` 에서 `.vscode` 관련 규칙을 제거해요
+
 ### Storybook Template
 
 ```json
