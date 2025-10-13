@@ -1,4 +1,4 @@
-# VS Code Code Snippets
+# VS Code Settings
 
 ## Barrel File Nesting
 
