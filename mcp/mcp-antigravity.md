@@ -23,3 +23,14 @@
   "serverUrl": "https://mcp.notion.com/mcp"
 }
 ```
+
+## [Playwright](https://github.com/microsoft/playwright-mcp)
+
+```json
+"playwright": {
+  "command": "npx",
+  "args": [
+    "@playwright/mcp@latest"
+  ]
+}
+```
