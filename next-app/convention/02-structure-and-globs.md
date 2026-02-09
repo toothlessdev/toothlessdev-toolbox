@@ -32,7 +32,7 @@ entities/<entity>/
   components/
   containers/
   contexts/
-  model/
+  schemas/
   hooks/
   lib/
   utils/
@@ -44,7 +44,7 @@ entities/<entity>/
 - **components** → 표현 UI
 - **containers** → 상태/로직 연결
 - **contexts** → React Context
-- **model** → 타입, 도메인 규칙
+- **schemas** → 타입, 도메인 규칙
 - **hooks** → 엔티티 전용 훅
 - **lib / utils** → 내부 보조 로직
 - **store** → 상태 관리
