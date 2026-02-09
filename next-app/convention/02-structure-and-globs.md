@@ -32,7 +32,7 @@ entities/<entity>/
   components/
   containers/
   contexts/
-  model/
+  schemas/
   hooks/
   lib/
   utils/
@@ -44,7 +44,7 @@ entities/<entity>/
 - **components** → 표현 UI
 - **containers** → 상태/로직 연결
 - **contexts** → React Context
-- **model** → 타입, 도메인 규칙
+- **schemas** → 타입, 도메인 규칙
 - **hooks** → 엔티티 전용 훅
 - **lib / utils** → 내부 보조 로직
 - **store** → 상태 관리
@@ -100,8 +100,8 @@ AI 동작의 기준이 된다.
 
 ## Entities
 
-- Models  
-  `entities/*/model/*Model.ts`
+- Schemas  
+  `entities/*/schemas/*Schema.ts`
 
 - Containers  
   `entities/*/containers/*Container.tsx`
@@ -186,7 +186,6 @@ app/**/not-found.tsx
 
 ## 규칙
 
-- Model → `*Model.ts`
 - Schema → `*Schema.ts`
 - Container → `*Container.tsx`
 
@@ -211,7 +210,7 @@ Next가 파일명을 강제한다.
 ## 예시
 
 ```
-entities/product/model/ProductModel.ts
+entities/product/schemas/ProductSchema.ts
 features/cart/add-item/schemas/AddToCartFormSchema.ts
 features/cart/add-item/services/addToCart.ts
 features/cart/add-item/containers/AddItemContainer.tsx
