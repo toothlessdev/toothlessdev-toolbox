@@ -15,3 +15,11 @@
   "serverUrl": "http://127.0.0.1:3845/mcp"
 }
 ```
+
+## [Notion](https://developers.notion.com/guides/mcp/mcp)
+
+```json
+"notion": {
+  "serverUrl": "https://mcp.notion.com/mcp"
+}
+```
