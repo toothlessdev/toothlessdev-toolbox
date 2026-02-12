@@ -10,6 +10,7 @@ export class RuntimeException extends Error {
 
   constructor(args: RuntimeExceptionConstructorArgs) {
     super(args.message);
+    this.name = this.constructor.name;
     this.exceptionCode = args.exceptionCode;
   }
 }
