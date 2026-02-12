@@ -1,11 +1,15 @@
-"use client";
-
 import React, { ReactNode } from "react";
-import { RuntimeException } from "./RuntimeException";
+import { ExceptionCode, RuntimeException } from "./RuntimeException";
+
+type OnExceptionArgs = {
+  exception: RuntimeException | undefined;
+  exceptionCode: ExceptionCode | undefined;
+  resetException: () => void;
+};
 
 export interface RuntimeExceptionBoundaryProps {
   children?: React.ReactNode;
-  onException?: (exception: RuntimeException | undefined) => ReactNode;
+  onException?: (args: OnExceptionArgs) => ReactNode;
 }
 
 type ErrorBoundaryState = {
@@ -51,9 +55,13 @@ export class RuntimeExceptionBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       if (this.props.onException) {
-        return this.props.onException(this.state.exception);
+        return this.props.onException({
+          exception: this.state.exception,
+          exceptionCode: this.state.exception?.exceptionCode,
+          resetException: this.resetException,
+        });
       }
-      return null;
+      return `예외 발생 : ${this.state.exception?.exceptionCode}`;
     }
     return this.props.children;
   }
